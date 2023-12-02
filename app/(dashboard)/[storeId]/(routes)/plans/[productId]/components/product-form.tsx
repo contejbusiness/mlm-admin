@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,19 +23,9 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Heading } from "@/components/ui/heading";
 import { AlertModal } from "@/components/modals/alert-modal";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import ImageUpload from "@/components/ui/image-upload";
-import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   name: z.string().min(1),
-  images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
   reward: z.coerce.number().min(1),
 });
@@ -73,14 +62,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
       }
     : {
         name: "",
-        images: [],
         price: 0,
         reward: 0,
-        categoryId: "",
-        colorId: "",
-        sizeId: "",
-        isFeatured: false,
-        isArchived: false,
+        totalPurchased: 0,
       };
 
   const form = useForm<ProductFormValues>({
