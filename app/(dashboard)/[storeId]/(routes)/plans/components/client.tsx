@@ -9,10 +9,10 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { ApiList } from "@/components/ui/api-list";
 
-import { ProductColumn, columns } from "./columns";
+import { PlanColumn, columns } from "./columns";
 
 interface ProductsClientProps {
-  data: ProductColumn[];
+  data: PlanColumn[];
 }
 
 export const ProductsClient: React.FC<ProductsClientProps> = ({ data }) => {
@@ -26,7 +26,7 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ data }) => {
           title={`Plans (${data.length})`}
           description="Manage your plans"
         />
-        <Button onClick={() => router.push(`/${params.storeId}/products/new`)}>
+        <Button onClick={() => router.push(`/${params.storeId}/plans/new`)}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       </div>

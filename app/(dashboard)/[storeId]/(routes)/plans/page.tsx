@@ -4,32 +4,24 @@ import prismadb from "@/lib/prismadb";
 import { formatter } from "@/lib/utils";
 
 import { ProductsClient } from "./components/client";
-import { ProductColumn } from "./components/columns";
+import { PlanColumn } from "./components/columns";
 
 const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
-  const products = await prismadb.product.findMany({
+  const products = await prismadb.plan.findMany({
     where: {
       storeId: params.storeId,
-    },
-    include: {
-      category: true,
-      size: true,
-      color: true,
     },
     orderBy: {
       createdAt: "desc",
     },
   });
 
-  const formattedProducts: ProductColumn[] = products.map((item) => ({
+  const formattedProducts: PlanColumn[] = products.map((item) => ({
     id: item.id,
     name: item.name,
-    isFeatured: item.isFeatured,
-    isArchived: item.isArchived,
+    reward: formatter.format(Number(item.reward)),
     price: formatter.format(Number(item.price)),
-    category: item.category.name,
-    size: item.size.name,
-    color: item.color.value,
+    totalPurchased: item.totalPurchased,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
 

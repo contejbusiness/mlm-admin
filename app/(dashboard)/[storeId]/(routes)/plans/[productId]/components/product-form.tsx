@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Trash } from "lucide-react";
-import { Category, Color, Image, Product, Size } from "@prisma/client";
+import { Category, Color, Image, Plan, Product, Size } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
@@ -33,14 +33,7 @@ const formSchema = z.object({
 type ProductFormValues = z.infer<typeof formSchema>;
 
 interface ProductFormProps {
-  initialData:
-    | (Product & {
-        images: Image[];
-      })
-    | null;
-  categories: Category[];
-  colors: Color[];
-  sizes: Size[];
+  initialData: Plan | null;
 }
 
 export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
@@ -64,7 +57,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
         name: "",
         price: 0,
         reward: 0,
-        totalPurchased: 0,
       };
 
   const form = useForm<ProductFormValues>({

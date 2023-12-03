@@ -16,10 +16,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { ProductColumn } from "./columns";
+import { PlanColumn } from "./columns";
 
 interface CellActionProps {
-  data: ProductColumn;
+  data: PlanColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -31,8 +31,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/products/${data.id}`);
-      toast.success("Product deleted.");
+      await axios.delete(`/api/${params.storeId}/plans/${data.id}`);
+      toast.success("Plan deleted.");
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
@@ -68,9 +68,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             <Copy className="mr-2 h-4 w-4" /> Copy Id
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() =>
-              router.push(`/${params.storeId}/products/${data.id}`)
-            }
+            onClick={() => router.push(`/${params.storeId}/plans/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
