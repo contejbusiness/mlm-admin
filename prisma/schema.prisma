@@ -19,6 +19,7 @@ model Store {
   sizes      Size[]      @relation("StoreToSize")
   colors     Color[]     @relation("StoreToColor")
   orders     Order[]     @relation("StoreToOrder")
+  scanners   Scanner[]   @relation("StoreToScanner")
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
@@ -151,4 +152,56 @@ model Plan {
   store          Store    @relation("StoreToPlan", fields: [storeId], references: [id])
 
   @@index([storeId])
+}
+
+model Scanner {
+  id        String   @id @default(uuid())
+  storeId   String
+  store     Store    @relation("StoreToScanner", fields: [storeId], references: [id])
+  label     String
+  imageUrl  String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([storeId])
+}
+
+model Redeem {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation("UserToRedeem", fields: [userId], references: [id])
+  amount    Int
+  status    Status   @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model RequestBalance {
+  id       String @id @default(uuid())
+  userId   String
+  user     User   @relation("UserToRequestBalance", fields: [userId], references: [id])
+  amount   Int
+  imageUrl String
+  status   Status @default(PENDING)
+
+  @@index([userId])
+}
+
+model User {
+  id       String           @id @default(uuid())
+  name     String
+  email    String           @unique @default("")
+  phone    String           @default("")
+  balance  Int              @default(0)
+  redeems  Redeem[]         @relation("UserToRedeem")
+  requests RequestBalance[] @relation("UserToRequestBalance")
+}
+
+enum Status {
+  PENDING
+  COMPLETED
+  REJECTED
 }

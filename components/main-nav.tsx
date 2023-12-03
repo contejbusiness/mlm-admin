@@ -20,38 +20,33 @@ export function MainNav({
     },
     {
       href: `/${params.storeId}/billboards`,
-      label: "Billboards",
+      label: "QR Scanner",
       active: pathname === `/${params.storeId}/billboards`,
     },
+    // {
+    //   href: `/${params.storeId}/categories`,
+    //   label: "Categories",
+    //   active: pathname === `/${params.storeId}/categories`,
+    // },
+    // {
+    //   href: `/${params.storeId}/sizes`,
+    //   label: "Sizes",
+    //   active: pathname === `/${params.storeId}/sizes`,
+    // },
+    // {
+    //   href: `/${params.storeId}/colors`,
+    //   label: "Colors",
+    //   active: pathname === `/${params.storeId}/colors`,
+    // },
     {
-      href: `/${params.storeId}/categories`,
-      label: "Categories",
-      active: pathname === `/${params.storeId}/categories`,
-    },
-    {
-      href: `/${params.storeId}/sizes`,
-      label: "Sizes",
-      active: pathname === `/${params.storeId}/sizes`,
-    },
-    {
-      href: `/${params.storeId}/colors`,
-      label: "Colors",
-      active: pathname === `/${params.storeId}/colors`,
-    },
-    {
-      href: `/${params.storeId}/products`,
-      label: "Products",
-      active: pathname === `/${params.storeId}/products`,
+      href: `/${params.storeId}/plans`,
+      label: "Plans",
+      active: pathname === `/${params.storeId}/plans`,
     },
     {
       href: `/${params.storeId}/orders`,
       label: "Orders",
       active: pathname === `/${params.storeId}/orders`,
-    },
-    {
-      href: `/${params.storeId}/scanner`,
-      label: "QR Scanner",
-      active: pathname === `/${params.storeId}/scanner`,
     },
   ];
 
