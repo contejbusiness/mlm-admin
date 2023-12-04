@@ -172,6 +172,7 @@ model Redeem {
   userId    String
   user      User     @relation("UserToRedeem", fields: [userId], references: [id])
   amount    Int
+  bank      String
   status    Status   @default(PENDING)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
