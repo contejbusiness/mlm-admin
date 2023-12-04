@@ -72,51 +72,29 @@ export async function PATCH(
   try {
     const { userId } = auth();
 
-    const body = await req.json();
-
-    const { name, value } = body;
+  
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
     }
 
-    if (!name) {
-      return new NextResponse("Name is required", { status: 400 });
-    }
-
-    if (!value) {
-      return new NextResponse("Value is required", { status: 400 });
-    }
-
 
     if (!params.sizeId) {
-      return new NextResponse("Size id is required", { status: 400 });
+      return new NextResponse("Redeem id is required", { status: 400 });
     }
 
-    const storeByUserId = await prismadb.store.findFirst({
-      where: {
-        id: params.storeId,
-        userId
-      }
-    });
-
-    if (!storeByUserId) {
-      return new NextResponse("Unauthorized", { status: 405 });
-    }
-
-    const size = await prismadb.size.update({
+    const redeem = await prismadb.redeem.update({
       where: {
         id: params.sizeId
       },
       data: {
-        name,
-        value
+        status: "COMPLETED"
       }
     });
   
-    return NextResponse.json(size);
+    return NextResponse.json(redeem);
   } catch (error) {
-    console.log('[SIZE_PATCH]', error);
+    console.log('[REDEEM_PATCH]', error);
     return new NextResponse("Internal error", { status: 500 });
   }
 };
