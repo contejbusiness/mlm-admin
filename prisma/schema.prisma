@@ -188,18 +188,21 @@ model RequestBalance {
   imageUrl  String
   status    Status   @default(PENDING)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
 }
 
 model User {
-  id       String           @id @default(uuid())
-  name     String
-  email    String           @unique @default("")
-  phone    String           @default("")
-  balance  Int              @default(0)
-  redeems  Redeem[]         @relation("UserToRedeem")
-  requests RequestBalance[] @relation("UserToRequestBalance")
+  id        String           @id @default(uuid())
+  name      String
+  email     String           @unique @default("")
+  phone     String           @default("")
+  balance   Int              @default(0)
+  redeems   Redeem[]         @relation("UserToRedeem")
+  requests  RequestBalance[] @relation("UserToRequestBalance")
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 }
 
 enum Status {
