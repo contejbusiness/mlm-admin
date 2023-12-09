@@ -3,6 +3,73 @@ import { auth } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
 
+export async function POST(
+  req: Request,
+  { params }: { params: { planId: string } }
+) {
+  try {
+    if (!params.planId) {
+      return new NextResponse("Plan id is required", { status: 400 });
+    }
+
+    const { userId } = await req.json();
+
+    if (!userId)
+      return new NextResponse("User id is required", { status: 400 });
+
+    const plan = await prismadb.plan.findUnique({
+      where: {
+        id: params.planId,
+      },
+    });
+
+    if (!plan) return new NextResponse("Plan not found", { status: 404 });
+
+    const user = await prismadb.user.findUnique({ where: { id: userId } });
+
+    if (!user) return new NextResponse("User not found", { status: 400 });
+
+    if (user.balance < plan.price) {
+      return new NextResponse(
+        "Insuffecient Balance, Please add balance to buy plan",
+        { status: 400 }
+      );
+    }
+
+    if (user.refferal > 0) {
+      const refferal = await prismadb.user.findFirst({
+        where: { myRefferalCode: user.refferal },
+      });
+
+      if (!refferal) {
+        return new NextResponse("Refferal code is invalid", { status: 400 });
+      }
+
+      const [updatedUser, updatedRefferal] = await prismadb.$transaction([
+        prismadb.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            balance: user.balance - plan.price,
+          },
+        }),
+        prismadb.user.update({
+          where: { id: refferal?.id },
+          data: { balance: plan.reward + refferal?.balance },
+        }),
+      ]);
+      console.log("🚀 ~ file: route.ts:62 ~ updatedUser, updatedRefferal:", updatedUser, updatedRefferal)
+    }
+
+
+    return NextResponse.json(plan);
+  } catch (error) {
+    console.log("[PLAN_GET]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}
+
 export async function GET(
   req: Request,
   { params }: { params: { productId: string } }
@@ -14,20 +81,20 @@ export async function GET(
 
     const plan = await prismadb.plan.findUnique({
       where: {
-        id: params.productId
-      }
+        id: params.productId,
+      },
     });
-  
+
     return NextResponse.json(plan);
   } catch (error) {
-    console.log('[PLAN_GET]', error);
+    console.log("[PLAN_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { productId: string, storeId: string } }
+  { params }: { params: { productId: string; storeId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -43,8 +110,8 @@ export async function DELETE(
     const storeByUserId = await prismadb.store.findFirst({
       where: {
         id: params.storeId,
-        userId
-      }
+        userId,
+      },
     });
 
     if (!storeByUserId) {
@@ -53,31 +120,27 @@ export async function DELETE(
 
     const plan = await prismadb.plan.delete({
       where: {
-        id: params.productId
+        id: params.productId,
       },
     });
-  
+
     return NextResponse.json(plan);
   } catch (error) {
-    console.log('[PLAN_DELETE]', error);
+    console.log("[PLAN_DELETE]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
-
+}
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { productId: string, storeId: string } }
+  { params }: { params: { productId: string; storeId: string } }
 ) {
   try {
     const { userId } = auth();
 
     const body = await req.json();
 
-    const { name,
-      price,
-      reward,
- } = body;
+    const { name, price, reward } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -91,8 +154,6 @@ export async function PATCH(
       return new NextResponse("Name is required", { status: 400 });
     }
 
-  
-
     if (!price) {
       return new NextResponse("Price is required", { status: 400 });
     }
@@ -101,12 +162,11 @@ export async function PATCH(
       return new NextResponse("Reward  is required", { status: 400 });
     }
 
-
     const storeByUserId = await prismadb.store.findFirst({
       where: {
         id: params.storeId,
-        userId
-      }
+        userId,
+      },
     });
 
     if (!storeByUserId) {
@@ -115,20 +175,18 @@ export async function PATCH(
 
     const plan = await prismadb.plan.update({
       where: {
-        id: params.productId
+        id: params.productId,
       },
       data: {
         name,
         price,
-       reward
+        reward,
       },
     });
 
-   
-  
     return NextResponse.json(plan);
   } catch (error) {
-    console.log('[PLAN_PATCH]', error);
+    console.log("[PLAN_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}

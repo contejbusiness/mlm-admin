@@ -1,18 +1,16 @@
-import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs";
 
-import prismadb from '@/lib/prismadb';
+import prismadb from "@/lib/prismadb";
 
-export async function POST(
-  req: Request,
-) {
+export async function POST(req: Request) {
   try {
     const body = await req.json();
 
     const { id, name, email, phone } = body;
 
     if (!id) {
-      return new NextResponse("Id is required", { status: 400})
+      return new NextResponse("Id is required", { status: 400 });
     }
 
     if (!name) {
@@ -22,14 +20,13 @@ export async function POST(
     if (!phone) {
       return new NextResponse("Phone number is required", { status: 400 });
     }
-    
 
     const ifUserExist = await prismadb.user.findUnique({
-      where: { id}
-    })
-    console.log("🚀 ~ file: route.ts:30 ~ ifUserExist:", ifUserExist)
+      where: { id },
+    });
+    console.log("🚀 ~ file: route.ts:30 ~ ifUserExist:", ifUserExist);
 
-    if(ifUserExist) {
+    if (ifUserExist) {
       return NextResponse.json(ifUserExist);
     }
 
@@ -39,45 +36,43 @@ export async function POST(
         name,
         email,
         phone,
-        myRefferalCode: Math.floor(Math.random()*90000) + 10000
-      }
+        myRefferalCode: Math.floor(Math.random() * 90000) + 10000,
+      },
     });
-  
+
     return NextResponse.json(user);
   } catch (error) {
-    console.log('[STORES_POST]', error);
+    console.log("[STORES_POST]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}
 
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
 
-export async function GET(
-  req: Request,
+    const userId = searchParams.get("userId");
 
-) {
- try {
-  const {searchParams} = new URL(req.url);
+    if (!userId) {
+      const users = await prismadb.user.findMany();
+      return NextResponse.json(users);
+    } else {
+      const user = await prismadb.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+      console.log("🚀 ~ file: route.ts:70 ~ user:", user);
 
-  const userId = searchParams.get("userId");
+      if (!user) {
+        console.log("user not found");
+        return new NextResponse("User not found", { status: 400 });
+      }
 
-  if(!userId) {
-    return new NextResponse("User Id is required", {status: 400})
-  }
-
-  const user = await prismadb.user.findUnique({
-    where: {
-      id: userId
+      return NextResponse.json(user);
     }
-  })
-  console.log("🚀 ~ file: route.ts:70 ~ user:", user)
-
-  if(!user) {
-    console.log("user not found")
-    return new NextResponse("User not found", {status: 400})
+  } catch (error) {
+    console.log("🚀 ~ file: route.ts:75 ~ GET ~ error:", error);
+    return new NextResponse("Internal Error", { status: 500 });
   }
-
-  return NextResponse.json(user)
- } catch (error) {
-    return new NextResponse("Internal Error", {status: 500})
- }
 }
