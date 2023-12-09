@@ -25,7 +25,10 @@ export async function POST(
 
     if (!plan) return new NextResponse("Plan not found", { status: 404 });
 
-    const user = await prismadb.user.findUnique({ where: { id: userId } });
+    const user = await prismadb.user.findUnique({
+      where: { id: userId },
+      include: { referredBy: true },
+    });
 
     if (!user) return new NextResponse("User not found", { status: 400 });
 
@@ -36,32 +39,31 @@ export async function POST(
       );
     }
 
-    if (user.refferal > 0) {
-      const refferal = await prismadb.user.findFirst({
-        where: { myRefferalCode: user.refferal },
-      });
+    if (user.referredBy == null)
+      return new NextResponse("Invalid Refference Id", { status: 400 });
 
-      if (!refferal) {
-        return new NextResponse("Refferal code is invalid", { status: 400 });
-      }
-
-      const [updatedUser, updatedRefferal] = await prismadb.$transaction([
-        prismadb.user.update({
-          where: {
-            id: userId,
+    await prismadb.$transaction([
+      prismadb.user.update({
+        where: {
+          id: user.referredBy.id,
+        },
+        data: {
+          balance: {
+            increment: 50,
           },
-          data: {
-            balance: user.balance - plan.price,
+        },
+      }),
+      prismadb.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          balance: {
+            decrement: plan.price,
           },
-        }),
-        prismadb.user.update({
-          where: { id: refferal?.id },
-          data: { balance: plan.reward + refferal?.balance },
-        }),
-      ]);
-      console.log("🚀 ~ file: route.ts:62 ~ updatedUser, updatedRefferal:", updatedUser, updatedRefferal)
-    }
-
+        },
+      }),
+    ]);
 
     return NextResponse.json(plan);
   } catch (error) {
