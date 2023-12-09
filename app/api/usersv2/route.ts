@@ -54,7 +54,7 @@ export async function GET(req: Request) {
 
     if (!userId) {
       const users = await prismadb.user.findMany({
-        include: { referrals: true },
+        include: { referrals: true, plan: true },
       });
       return NextResponse.json(users);
     } else {
@@ -62,7 +62,7 @@ export async function GET(req: Request) {
         where: {
           id: userId,
         },
-        include: { referrals: true },
+        include: { referrals: true, plan: true },
       });
       console.log("🚀 ~ file: route.ts:70 ~ user:", user);
 

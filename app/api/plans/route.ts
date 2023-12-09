@@ -3,23 +3,15 @@ import { auth } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
 
-
-export async function POST(
-  req: Request,
-) {
+export async function POST(req: Request) {
   try {
-
     const body = await req.json();
 
-    const {  name,
-    price,
-    reward } = body;
+    const { name, price, reward } = body;
 
-   
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
     }
-
 
     if (!price) {
       return new NextResponse("Price is required", { status: 400 });
@@ -29,7 +21,6 @@ export async function POST(
       return new NextResponse("Category id is required", { status: 400 });
     }
 
-
     const plan = await prismadb.plan.create({
       data: {
         name,
@@ -37,21 +28,22 @@ export async function POST(
         reward,
       },
     });
-  
+
     return NextResponse.json(plan);
   } catch (error) {
-    console.log('[PLANS_POST]', error);
+    console.log("[PLANS_POST]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
-
-
+}
 
 export async function GET(req: Request) {
   try {
     const plans = await prismadb.plan.findMany({
       orderBy: {
         createdAt: "desc",
+      },
+      include: {
+        User: true,
       },
     });
 

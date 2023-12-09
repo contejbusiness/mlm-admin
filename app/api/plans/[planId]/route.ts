@@ -61,6 +61,7 @@ export async function POST(
           balance: {
             decrement: plan.price,
           },
+          plan: { connect: { id: plan.id } },
         },
       }),
     ]);

@@ -148,6 +148,7 @@ model Plan {
   totalPurchased Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  User           User[]
 }
 
 model Scanner {
@@ -189,42 +190,28 @@ model RequestBalance {
   @@index([userId])
 }
 
-// model User {
-//   id             String           @id @default(uuid())
-//   name           String
-//   email          String           @unique @default("")
-//   phone          String           @default("")
-//   balance        Int              @default(0)
-//   redeems        Redeem[]         @relation("UserToRedeem")
-//   requests       RequestBalance[] @relation("UserToRequestBalance")
-//   refferals      Refferal[]       @relation("UserToRefferal")
-//   myRefferalCode Int
-//   refferal       Int              @default(-1)
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
 model User {
-  id             String           @id @default(uuid())
-  name           String
-  email          String           @unique @default("")
-  phone          String           @default("")
-  balance        Int              @default(0)
-  redeems        Redeem[]         @relation("UserToRedeem")
-  requests       RequestBalance[] @relation("UserToRequestBalance")
-  myRefferalCode Int
-  // Referral relationship
-  referredBy     User?            @relation("ReferredBy", fields: [referredById], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  referredById   String?
+  id       String           @id @default(uuid())
+  name     String
+  email    String           @unique @default("")
+  phone    String           @default("")
+  balance  Int              @default(0)
+  redeems  Redeem[]         @relation("UserToRedeem")
+  requests RequestBalance[] @relation("UserToRequestBalance")
 
-  // Referred users relationship
-  referrals User[] @relation("ReferredBy")
+  myRefferalCode Int
+  referredBy     User?   @relation("ReferredBy", fields: [referredById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  referredById   String?
+  referrals      User[]  @relation("ReferredBy")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  plan   Plan?   @relation(fields: [planId], references: [id])
+  planId String?
+
   @@index([referredById])
+  @@index([planId])
 }
 
 // model Refferal {
@@ -241,23 +228,4 @@ enum Status {
   PENDING
   COMPLETED
   REJECTED
-}
-
-// schema.prisma
-// schema.prisma
-
-model User2 {
-  id       Int    @id @default(autoincrement())
-  username String
-  email    String @unique
-  // other user fields...
-
-  // Referral relationship
-  referredBy   User2? @relation("ReferredBy", fields: [referredById], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  referredById Int?
-
-  // Referred users relationship
-  referrals User2[] @relation("ReferredBy")
-
-  @@index([referredById])
 }
