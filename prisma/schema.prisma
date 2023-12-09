@@ -16,12 +16,12 @@ model Store {
   categories Category[]  @relation("StoreToCategory")
   products   Product[]   @relation("StoreToProduct")
 
-  sizes      Size[]      @relation("StoreToSize")
-  colors     Color[]     @relation("StoreToColor")
-  orders     Order[]     @relation("StoreToOrder")
-  scanners   Scanner[]   @relation("StoreToScanner")
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  sizes     Size[]    @relation("StoreToSize")
+  colors    Color[]   @relation("StoreToColor")
+  orders    Order[]   @relation("StoreToOrder")
+  scanners  Scanner[] @relation("StoreToScanner")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Billboard {
@@ -189,6 +189,22 @@ model RequestBalance {
   @@index([userId])
 }
 
+// model User {
+//   id             String           @id @default(uuid())
+//   name           String
+//   email          String           @unique @default("")
+//   phone          String           @default("")
+//   balance        Int              @default(0)
+//   redeems        Redeem[]         @relation("UserToRedeem")
+//   requests       RequestBalance[] @relation("UserToRequestBalance")
+//   refferals      Refferal[]       @relation("UserToRefferal")
+//   myRefferalCode Int
+//   refferal       Int              @default(-1)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
 model User {
   id             String           @id @default(uuid())
   name           String
@@ -197,25 +213,51 @@ model User {
   balance        Int              @default(0)
   redeems        Redeem[]         @relation("UserToRedeem")
   requests       RequestBalance[] @relation("UserToRequestBalance")
-  refferals      Refferal[]       @relation("UserToRefferal")
   myRefferalCode Int
-  refferal       Int              @default(-1)
+  // Referral relationship
+  referredBy     User?            @relation("ReferredBy", fields: [referredById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  referredById   String?
+
+  // Referred users relationship
+  referrals User[] @relation("ReferredBy")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([referredById])
 }
 
-model Refferal {
-  id           String @id @default(uuid())
-  userId       String
-  user         User   @relation("UserToRefferal", fields: [userId], references: [id])
-  refferalCode BigInt
+// model Refferal {
+//   id           String @id @default(uuid())
+//   userId       String
+//   user         User   @relation("UserToRefferal", fields: [userId], references: [id])
+//   refferalCode Int
+//   reward       Int
 
-  @@index([userId])
-}
+//   @@index([userId])
+// }
 
 enum Status {
   PENDING
   COMPLETED
   REJECTED
+}
+
+// schema.prisma
+// schema.prisma
+
+model User2 {
+  id       Int    @id @default(autoincrement())
+  username String
+  email    String @unique
+  // other user fields...
+
+  // Referral relationship
+  referredBy   User2? @relation("ReferredBy", fields: [referredById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  referredById Int?
+
+  // Referred users relationship
+  referrals User2[] @relation("ReferredBy")
+
+  @@index([referredById])
 }
