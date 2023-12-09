@@ -194,15 +194,27 @@ model RequestBalance {
 }
 
 model User {
-  id        String           @id @default(uuid())
-  name      String
-  email     String           @unique @default("")
-  phone     String           @default("")
-  balance   Int              @default(0)
-  redeems   Redeem[]         @relation("UserToRedeem")
-  requests  RequestBalance[] @relation("UserToRequestBalance")
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  id             String           @id @default(uuid())
+  name           String
+  email          String           @unique @default("")
+  phone          String           @default("")
+  balance        Int              @default(0)
+  redeems        Redeem[]         @relation("UserToRedeem")
+  requests       RequestBalance[] @relation("UserToRequestBalance")
+  refferals      Refferal[]       @relation("UserToRefferal")
+  myRefferalCode Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Refferal {
+  id           String @id @default(uuid())
+  userId       String
+  user         User   @relation("UserToRefferal", fields: [userId], references: [id])
+  refferalCode BigInt
+
+  @@index([userId])
 }
 
 enum Status {
