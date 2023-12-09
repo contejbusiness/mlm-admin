@@ -8,9 +8,6 @@ import { PlanColumn } from "./components/columns";
 
 const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
   const products = await prismadb.plan.findMany({
-    where: {
-      storeId: params.storeId,
-    },
     orderBy: {
       createdAt: "desc",
     },
