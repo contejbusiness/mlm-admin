@@ -17,6 +17,7 @@ import {
 import { AlertModal } from "@/components/modals/alert-modal";
 
 import { RedeemColumn } from "./columns";
+import prismadb from "@/lib/prismadb";
 
 interface CellActionProps {
   data: RedeemColumn;
@@ -45,7 +46,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onDone = async () => {
     try {
       setLoading(true);
-      await axios.patch(`/api/${params.storeId}/redeems/${data.id}`);
+      // await axios.patch(`/api/${params.storeId}/redeems/${data.id}`);
+      await prismadb.redeem.update({
+        where: { id: data.id },
+        data: { status: "COMPLETED" },
+      });
     } catch (error) {
       toast.error("Failed to update status");
     } finally {

@@ -26,9 +26,9 @@ export const SizesClient: React.FC<SizesClientProps> = ({ data }) => {
           title={`Redeems (${data.length})`}
           description="Manage redeem requests"
         />
-        <Button onClick={() => router.push(`/${params.storeId}/redeems/new`)}>
+        {/* <Button onClick={() => router.push(`/${params.storeId}/redeems/new`)}>
           <Plus className="mr-2 h-4 w-4" /> Add New
-        </Button>
+        </Button> */}
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />
