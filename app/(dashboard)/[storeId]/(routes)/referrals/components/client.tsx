@@ -9,10 +9,10 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { ApiList } from "@/components/ui/api-list";
 
-import { columns, UserColumn } from "./columns";
+import { columns, RequestColumn } from "./columns";
 
 interface SizesClientProps {
-  data: UserColumn[];
+  data: RequestColumn[];
 }
 
 export const SizesClient: React.FC<SizesClientProps> = ({ data }) => {
@@ -22,16 +22,19 @@ export const SizesClient: React.FC<SizesClientProps> = ({ data }) => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading title={`Users (${data.length})`} description="Manage users" />
-        <Button onClick={() => router.push(`/${params.storeId}/users/new`)}>
+        <Heading
+          title={`Requests (${data.length})`}
+          description="Manage add balance requests"
+        />
+        <Button onClick={() => router.push(`/${params.storeId}/requests/new`)}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />
-      {/* <Heading title="API" description="API Calls for Users" />
+      <Heading title="API" description="API Calls for Requests" />
       <Separator />
-      <ApiList entityName="users" entityIdName="sizeId" /> */}
+      <ApiList entityName="requests" entityIdName="sizeId" />
     </>
   );
 };

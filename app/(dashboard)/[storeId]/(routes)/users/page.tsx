@@ -10,14 +10,19 @@ const SizesPage = async ({ params }: { params: { storeId: string } }) => {
     orderBy: {
       createdAt: "desc",
     },
+    include: { plan: true, referrals: true, requests: true, redeems: true },
   });
 
   const formattedSizes: UserColumn[] = users.map((item) => ({
     id: item.id,
     name: item.name,
-    email: item.email,
+    phone: item.phone,
     balance: item.balance,
-    createdAt: String(item.createdAt),
+    plan: item.plan == null ? "-" : item.plan.name,
+    redeems: item.redeems.length,
+    requests: item.requests.length,
+    referrals: item.referrals.length,
+    createdAt: new Date(String(item.createdAt)).toLocaleDateString(),
   }));
 
   return (

@@ -4,19 +4,16 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { CellAction } from "./cell-action";
 
-export type UserColumn = {
+export type ReferralColumn = {
   id: string;
   name: string;
   phone: string;
-  balance: number;
-  redeems: number;
-  requests: number;
+  balance: string;
   plan: string;
-  referrals: number;
   createdAt: string;
 };
 
-export const columns: ColumnDef<UserColumn>[] = [
+export const columns: ColumnDef<ReferralColumn>[] = [
   {
     accessorKey: "name",
     header: "Name",
@@ -30,27 +27,16 @@ export const columns: ColumnDef<UserColumn>[] = [
     header: "Balance",
   },
   {
-    accessorKey: "redeems",
-    header: "Redeems",
-  },
-  {
-    accessorKey: "requests",
-    header: "Requests",
-  },
-  {
     accessorKey: "plan",
     header: "Plan",
   },
-  {
-    accessorKey: "referrals",
-    header: "Referrals",
-  },
+
   {
     accessorKey: "createdAt",
-    header: "Joined",
+    header: "Date",
   },
-  {
-    id: "actions",
-    cell: ({ row }) => <CellAction data={row.original} />,
-  },
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => <CellAction data={row.original} />,
+  // },
 ];
