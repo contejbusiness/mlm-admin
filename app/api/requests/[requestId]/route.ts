@@ -64,35 +64,75 @@ export async function DELETE(
   }
 }
 
+export async function POST(
+  req: Request,
+  { params }: { params: { requestId: string } }
+) {
+  try {
+    const body = await req.json();
+    console.log("🚀 ~ file: route.ts:73 ~ body:", body)
+
+    const { amount, imageUrl } = body;
+
+    if (!params.requestId) {
+      return new NextResponse("Unauthenticated", { status: 403 });
+    }
+
+    if (!amount) {
+      return new NextResponse("Amount is required", { status: 400 });
+    }
+
+    if (!imageUrl) {
+      return new NextResponse("Image is required", { status: 400 });
+    }
+
+    const request = await prismadb.requestBalance.create({
+      data: {
+        userId: params.requestId,
+        amount,
+        imageUrl,
+      },
+    });
+
+    return NextResponse.json(request);
+  } catch (error) {
+    console.log("[REQUEST_POST]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}
+
 export async function PATCH(
   req: Request,
-  { params }: { params: { redeemId: string } }
+  { params }: { params: { requestId: string } }
 ) {
   try {
     const { userId } = auth();
 
-    if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 403 });
-    }
+    const requestBalanceId = params.requestId;
 
-    console.log(params.redeemId);
+    const transactionResult = await prismadb.$transaction(async (prisma) => {
+      const updatedRequestBalance = await prisma.requestBalance.update({
+        where: { id: requestBalanceId },
+        data: { status: "COMPLETED" },
+        include: { user: true },
+      });
 
-    if (!params.redeemId) {
-      return new NextResponse("Redeem id is required", { status: 400 });
-    }
+      await prisma.user.update({
+        where: { id: updatedRequestBalance.userId },
+        data: { balance: { increment: updatedRequestBalance.amount } },
+      });
 
-    const redeem = await prismadb.requestBalance.update({
-      where: {
-        id: params.redeemId,
-      },
-      data: {
-        status: "COMPLETED",
-      },
+      return updatedRequestBalance;
     });
 
-    return NextResponse.json(redeem);
+    console.log(
+      "RequestBalance completed with transaction:",
+      transactionResult
+    );
+
+    return NextResponse.json(transactionResult); //
   } catch (error) {
-    console.log("[REDEEM_PATCH]", error);
+    console.log("[REQUEST_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
