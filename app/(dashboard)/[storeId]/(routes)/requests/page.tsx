@@ -20,7 +20,7 @@ const SizesPage = async ({ params }: { params: { storeId: string } }) => {
     name: item.user.name,
     amount: item.amount,
     status: item.status,
-    imageUrl: item.imageUrl.length > 0 ? "AVAILABLE" : "NOT FOUND",
+    imageUrl: item.imageUrl,
 
     createdAt: new Date(item.createdAt).toLocaleDateString(),
   }));
