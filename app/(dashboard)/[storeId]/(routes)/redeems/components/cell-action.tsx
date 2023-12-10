@@ -46,12 +46,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onDone = async () => {
     try {
       setLoading(true);
-      // await axios.patch(`/api/${params.storeId}/redeems/${data.id}`);
-      await prismadb.redeem.update({
-        where: { id: data.id },
-        data: { status: "COMPLETED" },
-      });
+
+      const res = await axios.patch(
+        `/api/${params.storeId}/redeems/${data.id}`
+      );
+
+      console.log("🚀 ~ file: cell-action.tsx:51 ~ onDone ~ res:", res);
     } catch (error) {
+
       toast.error("Failed to update status");
     } finally {
       setOpen(false);

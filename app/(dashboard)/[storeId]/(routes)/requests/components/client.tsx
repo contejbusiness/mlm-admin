@@ -16,8 +16,7 @@ interface SizesClientProps {
 }
 
 export const SizesClient: React.FC<SizesClientProps> = ({ data }) => {
-  const params = useParams();
-  const router = useRouter();
+  
 
   return (
     <>
@@ -26,9 +25,9 @@ export const SizesClient: React.FC<SizesClientProps> = ({ data }) => {
           title={`Requests (${data.length})`}
           description="Manage add balance requests"
         />
-        <Button onClick={() => router.push(`/${params.storeId}/requests/new`)}>
+        {/* <Button onClick={() => router.push(`/${params.storeId}/requests/new`)}>
           <Plus className="mr-2 h-4 w-4" /> Add New
-        </Button>
+        </Button> */}
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />
