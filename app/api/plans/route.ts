@@ -49,7 +49,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(plans);
   } catch (error) {
-    console.log("[PRODUCTS_GET]", error);
+    console.log("[PRODUCTS_GET] ", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
