@@ -5,56 +5,31 @@ interface GraphData {
   total: number;
 }
 
-export const getGraphRevenue = async (storeId: string): Promise<GraphData[]> => {
-  const paidOrders = await prismadb.order.findMany({
+export const getGraphRevenue = async (
+  storeId: string
+): Promise<GraphData[]> => {
+  const completedRequests = await prismadb.requestBalance.findMany({
     where: {
-      storeId,
-      isPaid: true,
-    },
-    include: {
-      orderItems: {
-        include: {
-          product: true,
-        },
-      },
+      status: "COMPLETED",
     },
   });
 
-  const monthlyRevenue: { [key: number]: number } = {};
+  const dailyRevenue: { [key: number]: number } = {};
 
-  // Grouping the orders by month and summing the revenue
-  for (const order of paidOrders) {
-    const month = order.createdAt.getMonth(); // 0 for Jan, 1 for Feb, ...
-    let revenueForOrder = 0;
+  // Grouping the requests by day and summing the revenue
+  for (const request of completedRequests) {
+    const day = new Date(request.createdAt).getDate(); // Day of the month (1 to 31)
+    const revenueForRequest = request.amount || 0;
 
-    for (const item of order.orderItems) {
-      revenueForOrder += item.product.price.toNumber();
-    }
-
-    // Adding the revenue for this order to the respective month
-    monthlyRevenue[month] = (monthlyRevenue[month] || 0) + revenueForOrder;
+    // Adding the revenue for this request to the respective day
+    dailyRevenue[day] = (dailyRevenue[day] || 0) + revenueForRequest;
   }
 
   // Converting the grouped data into the format expected by the graph
-  const graphData: GraphData[] = [
-    { name: "Jan", total: 0 },
-    { name: "Feb", total: 0 },
-    { name: "Mar", total: 0 },
-    { name: "Apr", total: 0 },
-    { name: "May", total: 0 },
-    { name: "Jun", total: 0 },
-    { name: "Jul", total: 0 },
-    { name: "Aug", total: 0 },
-    { name: "Sep", total: 0 },
-    { name: "Oct", total: 0 },
-    { name: "Nov", total: 0 },
-    { name: "Dec", total: 0 },
-  ];
-
-  // Filling in the revenue data
-  for (const month in monthlyRevenue) {
-    graphData[parseInt(month)].total = monthlyRevenue[parseInt(month)];
-  }
+  const graphData: GraphData[] = Array.from({ length: 31 }, (_, index) => ({
+    name: (index + 1).toString(), // Day of the month (1 to 31)
+    total: dailyRevenue[index + 1] || 0,
+  }));
 
   return graphData;
 };

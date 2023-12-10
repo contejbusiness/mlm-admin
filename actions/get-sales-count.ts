@@ -1,12 +1,8 @@
 import prismadb from "@/lib/prismadb";
 
 export const getSalesCount = async (storeId: string) => {
-  const salesCount = await prismadb.order.count({
-    where: {
-      storeId,
-      isPaid: true
-    },
-  });
+  const totalUsersCount: number = await prismadb.user.count();
 
-  return salesCount;
+
+  return totalUsersCount;
 };
