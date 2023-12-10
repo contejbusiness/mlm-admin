@@ -19,9 +19,9 @@ export function MainNav({
       active: pathname === `/${params.storeId}`,
     },
     {
-      href: `/${params.storeId}/billboards`,
+      href: `/${params.storeId}/scanner`,
       label: "QR Scanner",
-      active: pathname === `/${params.storeId}/billboards`,
+      active: pathname === `/${params.storeId}/scanner`,
     },
     {
       href: `/${params.storeId}/plans`,
