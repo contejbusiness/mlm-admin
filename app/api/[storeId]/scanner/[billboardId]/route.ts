@@ -14,20 +14,20 @@ export async function GET(
 
     const scanner = await prismadb.scanner.findUnique({
       where: {
-        id: params.billboardId
-      }
+        id: params.billboardId,
+      },
     });
-  
+
     return NextResponse.json(scanner);
   } catch (error) {
-    console.log('[SCANNER_GET]', error);
+    console.log("[SCANNER_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { billboardId: string, storeId: string } }
+  { params }: { params: { billboardId: string; storeId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -44,7 +44,7 @@ export async function DELETE(
       where: {
         id: params.storeId,
         userId,
-      }
+      },
     });
 
     if (!storeByUserId) {
@@ -54,28 +54,67 @@ export async function DELETE(
     const scanner = await prismadb.scanner.delete({
       where: {
         id: params.billboardId,
-      }
+      },
     });
-  
+
     return NextResponse.json(scanner);
   } catch (error) {
-    console.log('[SCANNER_DELETE]', error);
+    console.log("[SCANNER_DELETE]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}
 
+export async function PUT(
+  req: Request,
+  { params }: { params: { billboardId: string; storeId: string } }
+) {
+  try {
+    const { userId } = auth(); // Replace with your authentication logic
+
+    if (!userId) {
+      return new NextResponse("Unauthenticated", { status: 403 });
+    }
+
+    const { billboardId } = params;
+
+    if (!billboardId) {
+      return new NextResponse("Billboard id is required", { status: 400 });
+    }
+
+    await prismadb.$transaction(async (prisma) => {
+      await prisma.scanner.updateMany({
+        data: { active: false },
+      });
+
+      // Step 2: Update the specific billboard
+      const updatedBillboard = await prisma.scanner.update({
+        where: { id: billboardId },
+        data: {
+          active: true,
+        },
+      });
+
+      console.log("Scanner updated:", updatedBillboard);
+    });
+
+    return new NextResponse("Scanner updated successfully", { status: 200 });
+  } catch (error) {
+    console.log("[SCANNER_DELETE]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { billboardId: string, storeId: string } }
+  { params }: { params: { billboardId: string; storeId: string } }
 ) {
-  try {   
+  try {
     const { userId } = auth();
 
     const body = await req.json();
-    
+
     const { label, imageUrl } = body;
-    
+
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
     }
@@ -96,7 +135,7 @@ export async function PATCH(
       where: {
         id: params.storeId,
         userId,
-      }
+      },
     });
 
     if (!storeByUserId) {
@@ -109,13 +148,13 @@ export async function PATCH(
       },
       data: {
         label,
-        imageUrl
-      }
+        imageUrl,
+      },
     });
-  
+
     return NextResponse.json(billboard);
   } catch (error) {
-    console.log('[BILLBOARD_PATCH]', error);
+    console.log("[BILLBOARD_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}

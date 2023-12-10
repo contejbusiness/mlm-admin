@@ -31,21 +31,29 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/billboards/${data.id}`);
+      await axios.delete(`/api/${params.storeId}/scanner/${data.id}`);
       toast.success("Billboard deleted.");
       router.refresh();
     } catch (error) {
-      toast.error(
-        "Make sure you removed all categories using this billboard first."
-      );
+      toast.error("Make sure you removed all");
     } finally {
       setOpen(false);
       setLoading(false);
     }
   };
 
-  const setActive = (id: string) => {
-    console.log(id);
+  const setActive = async (id: string) => {
+    try {
+      setLoading(true);
+      await axios.put(`/api/${params.storeId}/scanner/${data.id}`);
+      toast.success("Scanner Updated.");
+      router.refresh();
+    } catch (error) {
+      toast.error(String(error));
+    } finally {
+      setOpen(false);
+      setLoading(false);
+    }
   };
 
   return (

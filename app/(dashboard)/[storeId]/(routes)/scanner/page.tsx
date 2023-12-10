@@ -15,7 +15,8 @@ const BillboardsPage = async ({ params }: { params: { storeId: string } }) => {
   const formattedBillboards: BillboardColumn[] = billboards.map((item) => ({
     id: item.id,
     label: item.label,
-    createdAt: format(item.createdAt, "MMMM do, yyyy"),
+    active: item.active,
+    createdAt: new Date(item.createdAt).toLocaleDateString(),
   }));
 
   return (
