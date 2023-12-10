@@ -23,21 +23,6 @@ export function MainNav({
       label: "QR Scanner",
       active: pathname === `/${params.storeId}/billboards`,
     },
-    // {
-    //   href: `/${params.storeId}/categories`,
-    //   label: "Categories",
-    //   active: pathname === `/${params.storeId}/categories`,
-    // },
-    // {
-    //   href: `/${params.storeId}/sizes`,
-    //   label: "Sizes",
-    //   active: pathname === `/${params.storeId}/sizes`,
-    // },
-    // {
-    //   href: `/${params.storeId}/colors`,
-    //   label: "Colors",
-    //   active: pathname === `/${params.storeId}/colors`,
-    // },
     {
       href: `/${params.storeId}/plans`,
       label: "Plans",
@@ -54,9 +39,9 @@ export function MainNav({
       active: pathname === `/${params.storeId}/redeems`,
     },
     {
-      href: `/${params.storeId}/orders`,
-      label: "Orders",
-      active: pathname === `/${params.storeId}/orders`,
+      href: `/${params.storeId}/users`,
+      label: "Users",
+      active: pathname === `/${params.storeId}/users`,
     },
   ];
 

@@ -23,9 +23,9 @@ export const SizesClient: React.FC<SizesClientProps> = ({ data }) => {
     <>
       <div className="flex items-center justify-between">
         <Heading title={`Users (${data.length})`} description="Manage users" />
-        <Button onClick={() => router.push(`/${params.storeId}/users/new`)}>
+        {/* <Button onClick={() => router.push(`/${params.storeId}/users/new`)}>
           <Plus className="mr-2 h-4 w-4" /> Add New
-        </Button>
+        </Button> */}
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />

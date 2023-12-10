@@ -26,9 +26,9 @@ export const SizesClient: React.FC<SizesClientProps> = ({ data }) => {
           title={`Total Referrals (${data.length})`}
           description="List of users reffered"
         />
-        <Button onClick={() => router.push(`/${params.storeId}/requests/new`)}>
+        {/* <Button onClick={() => router.push(`/${params.storeId}/requests/new`)}>
           <Plus className="mr-2 h-4 w-4" /> Add New
-        </Button>
+        </Button> */}
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />

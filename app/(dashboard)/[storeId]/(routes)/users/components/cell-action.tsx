@@ -76,17 +76,21 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => onDone()}>
-            <Check className="mr-2 h-4 w-4" /> Done
-          </DropdownMenuItem>
           <DropdownMenuItem
+            onClick={() =>
+              router.push(`/${params.storeId}/referrals/${data.id}`)
+            }
+          >
+            <Check className="mr-2 h-4 w-4" /> View Referrals
+          </DropdownMenuItem>
+          {/* <DropdownMenuItem
             onClick={() => router.push(`/${params.storeId}/redeems/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          </DropdownMenuItem> */}
+          {/* <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
     </>
