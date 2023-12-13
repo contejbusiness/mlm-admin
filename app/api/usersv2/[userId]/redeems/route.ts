@@ -54,3 +54,30 @@ export async function POST(
     });
   }
 }
+
+export async function GET(
+  req: Request,
+  { params }: { params: { userId: string } }
+) {
+  console.log("I am called");
+  try {
+    if (!params.userId) {
+      return new NextResponse("User id is required", { status: 400 });
+    }
+
+    const user = await prismadb.user.findUnique({
+      where: { id: params.userId },
+      include: { referrals: true, plan: true },
+    });
+    console.log("🚀 ~ file: route.ts:72 ~ user:", user)
+
+    if (!user) return new NextResponse("User not found", { status: 400 });
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.log("[USER_GET_Redeem]", error);
+    return new NextResponse(`Internal error - ${error}`, {
+      status: 500,
+    });
+  }
+}

@@ -24,7 +24,6 @@ export async function POST(req: Request) {
     const ifUserExist = await prismadb.user.findUnique({
       where: { id },
     });
-    console.log("🚀 ~ file: route.ts:30 ~ ifUserExist:", ifUserExist);
 
     if (ifUserExist) {
       return NextResponse.json(ifUserExist);
@@ -61,8 +60,14 @@ export async function GET(req: Request) {
         where: {
           id: userId,
         },
+        include: {
+          referrals: true,
+          referredBy: true,
+          plan: true,
+          redeems: true,
+          requests: true,
+        },
       });
-      console.log("🚀 ~ file: route.ts:70 ~ user:", user);
 
       if (!user) {
         console.log("user not found");
