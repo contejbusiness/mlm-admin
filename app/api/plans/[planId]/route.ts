@@ -75,16 +75,16 @@ export async function POST(
 
 export async function GET(
   req: Request,
-  { params }: { params: { productId: string } }
+  { params }: { params: { planId: string } }
 ) {
   try {
-    if (!params.productId) {
+    if (!params.planId) {
       return new NextResponse("Product id is required", { status: 400 });
     }
 
     const plan = await prismadb.plan.findUnique({
       where: {
-        id: params.productId,
+        id: params.planId,
       },
     });
 

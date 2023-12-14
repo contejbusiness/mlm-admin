@@ -13,7 +13,7 @@ export async function POST(
     }
 
     const { amount, bank } = await req.json();
-    console.log("🚀 ~ file: route.ts:16 ~ amount, bank:", amount, bank)
+    console.log("🚀 ~ file: route.ts:16 ~ amount, bank:", amount, bank);
 
     const transactionResult = await prismadb.$transaction(async (prisma) => {
       // Step 1: Check if the user has enough balance
@@ -28,13 +28,11 @@ export async function POST(
         );
       }
 
-      // Step 2: Deduct the amount from the user's balance
       await prisma.user.update({
         where: { id: params.userId },
         data: { balance: user.balance - amount },
       });
 
-      // Step 3: Create a new redeem request
       const newRedeem = await prisma.redeem.create({
         data: {
           userId: params.userId,
@@ -70,7 +68,7 @@ export async function GET(
       where: { id: params.userId },
       include: { referrals: true, plan: true },
     });
-    console.log("🚀 ~ file: route.ts:72 ~ user:", user)
+    console.log("🚀 ~ file: route.ts:72 ~ user:", user);
 
     if (!user) return new NextResponse("User not found", { status: 400 });
 
