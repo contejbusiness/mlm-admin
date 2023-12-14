@@ -27,7 +27,7 @@ export async function POST(
 
     const user = await prismadb.user.findUnique({
       where: { id: userId },
-      include: { referredBy: true },
+      include: { referredBy: true, plan: true },
     });
 
     if (!user) return new NextResponse("User not found", { status: 400 });
@@ -39,32 +39,39 @@ export async function POST(
       );
     }
 
-    if (user.referredBy == null)
-      return new NextResponse("Invalid Refference Id", { status: 400 });
-
-    await prismadb.$transaction([
-      prismadb.user.update({
-        where: {
-          id: user.referredBy.id,
-        },
+    if (user.referredBy == null) {
+      await prismadb.user.update({
+        where: { id: userId },
         data: {
-          balance: {
-            increment: 50,
-          },
-        },
-      }),
-      prismadb.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          balance: {
-            decrement: plan.price,
-          },
+          balance: { decrement: plan.price },
           plan: { connect: { id: plan.id } },
         },
-      }),
-    ]);
+      });
+    } else {
+      await prismadb.$transaction([
+        prismadb.user.update({
+          where: {
+            id: user.referredBy.id,
+          },
+          data: {
+            balance: {
+              increment: user.plan != null ? user.plan.reward : 50,
+            },
+          },
+        }),
+        prismadb.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            balance: {
+              decrement: plan.price,
+            },
+            plan: { connect: { id: plan.id } },
+          },
+        }),
+      ]);
+    }
 
     return NextResponse.json(plan);
   } catch (error) {
