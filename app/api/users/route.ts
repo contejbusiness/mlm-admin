@@ -53,7 +53,15 @@ export async function GET(req: Request) {
     const userId = searchParams.get("userId");
 
     if (!userId) {
-      const users = await prismadb.user.findMany();
+      const users = await prismadb.user.findMany({
+        include: {
+          referrals: true,
+          referredBy: true,
+          plan: true,
+          redeems: true,
+          requests: true,
+        },
+      });
       return NextResponse.json(users);
     } else {
       const user = await prismadb.user.findUnique({

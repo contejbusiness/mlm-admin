@@ -13,6 +13,7 @@ export async function POST(
     }
 
     const { amount, bank } = await req.json();
+    console.log("🚀 ~ file: route.ts:16 ~ amount, bank:", amount, bank)
 
     const transactionResult = await prismadb.$transaction(async (prisma) => {
       // Step 1: Check if the user has enough balance
