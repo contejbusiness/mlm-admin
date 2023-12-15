@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Trash } from "lucide-react";
-import { Size } from "@prisma/client";
+import { Size, User } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
@@ -32,7 +32,7 @@ const formSchema = z.object({
 type SizeFormValues = z.infer<typeof formSchema>;
 
 interface SizeFormProps {
-  initialData: Size | null;
+  initialData: User | null;
 }
 
 export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
@@ -45,8 +45,8 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
   const title = initialData ? "Edit a redeem request" : "Create redeem request";
   const description = initialData ? "Edit a redeem request for user." : "Add a new redeem request";
   const toastMessage = initialData
-    ? "Redeem request updated."
-    : "Redeem request created.";
+    ? "User updated."
+    : "User created.";
   const action = initialData ? "Save changes" : "Create";
 
   const form = useForm<SizeFormValues>({
@@ -61,7 +61,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
       setLoading(true);
       if (initialData) {
         await axios.patch(
-          `/api/${params.storeId}/redeems/${params.sizeId}`,
+          `/api/${params.storeId}/users/${params.sizeId}`,
           data
         );
       } else {

@@ -39,6 +39,10 @@ export async function POST(
       );
     }
 
+    if (user.plan != null) {
+      return new NextResponse("User already have a plan", { status: 400 });
+    }
+
     if (user.referredBy == null) {
       await prismadb.user.update({
         where: { id: userId },
@@ -55,6 +59,7 @@ export async function POST(
           },
           data: {
             balance: {
+              //@ts-ignore
               increment: user.plan != null ? user.plan.reward : 50,
             },
           },

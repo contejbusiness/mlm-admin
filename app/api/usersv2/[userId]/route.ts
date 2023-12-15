@@ -42,9 +42,41 @@ export async function PATCH(
     });
 
     return NextResponse.json(updatedUser);
-   
   } catch (error) {
     console.log("[USER_PATCH_REFFERAL]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}
+
+export async function PUT(
+  req: Request,
+  { params }: { params: { userId: string } }
+) {
+  try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthenticated", { status: 403 });
+    }
+
+    const { balance } = await req.json();
+
+    if (!balance) {
+      return new NextResponse("Balance is required", { status: 400 });
+    }
+
+    const updatedUser = await prismadb.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        balance,
+      },
+    });
+
+    return NextResponse.json(updatedUser);
+  } catch (error) {
+    console.error("[USER_PUT]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
