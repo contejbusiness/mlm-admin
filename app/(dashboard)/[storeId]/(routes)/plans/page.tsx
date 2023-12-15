@@ -11,6 +11,9 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
     orderBy: {
       createdAt: "desc",
     },
+    include: {
+      User: true,
+    },
   });
 
   const formattedProducts: PlanColumn[] = products.map((item) => ({
@@ -18,7 +21,7 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
     name: item.name,
     reward: formatter.format(Number(item.reward)),
     price: formatter.format(Number(item.price)),
-    totalPurchased: item.totalPurchased,
+    purchased: item.User.length,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
 

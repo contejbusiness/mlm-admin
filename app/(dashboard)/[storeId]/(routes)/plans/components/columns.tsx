@@ -9,7 +9,7 @@ export type PlanColumn = {
   name: string;
   price: string;
   reward: String;
-  totalPurchased: number;
+  purchased: number;
   createdAt: string;
 };
 
@@ -25,6 +25,10 @@ export const columns: ColumnDef<PlanColumn>[] = [
   {
     accessorKey: "reward",
     header: "Reward",
+  },
+  {
+    accessorKey: "purchased",
+    header: "Total Purchased",
   },
 
   {
