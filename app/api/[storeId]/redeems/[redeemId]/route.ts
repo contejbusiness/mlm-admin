@@ -75,20 +75,42 @@ export async function PATCH(
       return new NextResponse("Unauthenticated", { status: 403 });
     }
 
-    console.log(params.redeemId);
-
     if (!params.redeemId) {
       return new NextResponse("Redeem id is required", { status: 400 });
     }
 
-    const redeem = await prismadb.requestBalance.update({
+    const redeem = await prismadb.requestBalance.findUnique({
       where: {
         id: params.redeemId,
       },
-      data: {
-        status: "COMPLETED",
+      include: {
+        user: true,
       },
     });
+
+    if (!redeem) {
+      return new NextResponse("Redeem request not found", { status: 404 });
+    }
+    await prismadb.$transaction([
+      prismadb.requestBalance.update({
+        where: {
+          id: params.redeemId,
+        },
+        data: {
+          status: "COMPLETED",
+        },
+      }),
+      prismadb.user.update({
+        where: {
+          id: redeem.userId,
+        },
+        data: {
+          balance: {
+            increment: redeem.amount,
+          },
+        },
+      }),
+    ]);
 
     return NextResponse.json(redeem);
   } catch (error) {
