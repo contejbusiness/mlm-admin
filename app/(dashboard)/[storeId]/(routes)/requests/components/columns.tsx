@@ -22,10 +22,10 @@ export const columns: ColumnDef<RequestColumn>[] = [
     accessorKey: "amount",
     header: "Amount",
   },
-  {
-    accessorKey: "imageUrl",
-    header: "Screenshot",
-  },
+  // {
+  //   accessorKey: "imageUrl",
+  //   header: "Screenshot",
+  // },
   {
     accessorKey: "status",
     header: "Status",
