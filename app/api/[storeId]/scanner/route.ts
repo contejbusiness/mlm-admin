@@ -1,8 +1,8 @@
-wimport { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs";
 
-import prismadb from '@/lib/prismadb';
- 
+import prismadb from "@/lib/prismadb";
+
 export async function POST(
   req: Request,
   { params }: { params: { storeId: string } }
@@ -34,7 +34,7 @@ export async function POST(
       where: {
         id: params.storeId,
         userId,
-      }
+      },
     });
 
     if (!storeByUserId) {
@@ -46,15 +46,15 @@ export async function POST(
         label,
         imageUrl,
         storeId: params.storeId,
-      }
+      },
     });
-  
+
     return NextResponse.json(scanner);
   } catch (error) {
-    console.log('[SCANNER_POST]', error);
+    console.log("[SCANNER_POST]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}
 
 export async function GET(
   req: Request,
@@ -67,13 +67,13 @@ export async function GET(
 
     const scanners = await prismadb.scanner.findMany({
       where: {
-        storeId: params.storeId
-      }
+        storeId: params.storeId,
+      },
     });
-  
+
     return NextResponse.json(scanners);
   } catch (error) {
-    console.log('[BILLBOARDS_GET]', error);
+    console.log("[BILLBOARDS_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}
