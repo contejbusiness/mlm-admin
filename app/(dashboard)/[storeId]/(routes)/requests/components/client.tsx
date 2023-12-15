@@ -16,8 +16,6 @@ interface SizesClientProps {
 }
 
 export const SizesClient: React.FC<SizesClientProps> = ({ data }) => {
-  
-
   return (
     <>
       <div className="flex items-center justify-between">
@@ -31,9 +29,9 @@ export const SizesClient: React.FC<SizesClientProps> = ({ data }) => {
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />
-      <Heading title="API" description="API Calls for Requests" />
+      {/* <Heading title="API" description="API Calls for Requests" />
       <Separator />
-      <ApiList entityName="requests" entityIdName="sizeId" />
+      <ApiList entityName="requests" entityIdName="sizeId" /> */}
     </>
   );
 };

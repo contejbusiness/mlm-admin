@@ -10,6 +10,9 @@ import { Separator } from "@/components/ui/separator";
 import { ApiList } from "@/components/ui/api-list";
 
 import { PlanColumn, columns } from "./columns";
+import { useEffect, useState } from "react";
+
+type ButtonSize = "sm" | "lg";
 
 interface ProductsClientProps {
   data: PlanColumn[];
@@ -18,6 +21,25 @@ interface ProductsClientProps {
 export const ProductsClient: React.FC<ProductsClientProps> = ({ data }) => {
   const params = useParams();
   const router = useRouter();
+  const [buttonSize, setButtonSize] = useState<ButtonSize>("sm");
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setButtonSize("lg");
+      } else {
+        setButtonSize("sm");
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <>
@@ -26,15 +48,18 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ data }) => {
           title={`Plans (${data.length})`}
           description="Manage your plans"
         />
-        <Button onClick={() => router.push(`/${params.storeId}/plans/new`)}>
+        <Button
+          onClick={() => router.push(`/${params.storeId}/plans/new`)}
+          size={buttonSize}
+        >
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />
-      <Heading title="API" description="API Calls for Plans" />
+      {/* <Heading title="API" description="API Calls for Plans" />
       <Separator />
-      <ApiList entityName="products" entityIdName="productId" />
+      <ApiList entityName="products" entityIdName="productId" /> */}
     </>
   );
 };
