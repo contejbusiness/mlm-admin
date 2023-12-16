@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { id, name, email, phone } = body;
+    const { id, name, email } = body;
 
     if (!id) {
       return new NextResponse("Id is required", { status: 400 });
@@ -15,10 +15,6 @@ export async function POST(req: Request) {
 
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
-    }
-
-    if (!phone) {
-      return new NextResponse("Phone number is required", { status: 400 });
     }
 
     const ifUserExist = await prismadb.user.findUnique({
@@ -34,7 +30,7 @@ export async function POST(req: Request) {
         id,
         name,
         email,
-        phone,
+
         myRefferalCode: Math.floor(Math.random() * 90000) + 10000,
       },
     });
