@@ -48,7 +48,7 @@ export function MainNav({
   return (
     <nav
       className={cn(
-        "flex flex-col lg:flex-row items-center lg:space-x-6",
+        "flex items-center flex-wrap lg:space-x-6 gap-4 mb-4",
         className
       )}
       {...props}
@@ -58,7 +58,7 @@ export function MainNav({
           key={route.href}
           href={route.href}
           className={cn(
-            "text-sm font-medium transition-colors hover:text-primary",
+            "text-sm font-medium transition-colors hover:text-primary flex-wrap",
             route.active
               ? "text-black dark:text-white"
               : "text-muted-foreground"
