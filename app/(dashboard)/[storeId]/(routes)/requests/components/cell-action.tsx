@@ -67,7 +67,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
-        onConfirm={onConfirm}
+        onConfirm={onDone}
         loading={loading}
       />
       <DropdownMenu>
@@ -79,15 +79,15 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => onDone()}>
-            <Check className="mr-2 h-4 w-4" /> Done
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <Check className="mr-2 h-4 w-4" /> Approve
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push(data.imageUrl)}>
             <Edit className="mr-2 h-4 w-4" /> View Screenshot
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          {/* <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
     </>

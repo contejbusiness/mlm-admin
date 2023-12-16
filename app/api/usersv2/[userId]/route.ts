@@ -8,7 +8,7 @@ export async function PATCH(
   { params }: { params: { userId: string } }
 ) {
   try {
-    let { refferalCode } = await req.json();
+    let { refferalCode, phone } = await req.json();
 
     if (!params.userId) {
       return new NextResponse("User id is required", { status: 400 });
@@ -34,7 +34,7 @@ export async function PATCH(
     if (refferalCode == 0) {
       const updatedUser = await prismadb.user.update({
         where: { id: params.userId },
-        data: { referredById: "0" },
+        data: { referredById: "0", phone },
       });
 
       return NextResponse.json(updatedUser);
@@ -54,6 +54,7 @@ export async function PATCH(
       where: { id: params.userId },
       data: {
         referredById: refferedUser.id,
+        phone,
       },
     });
 
