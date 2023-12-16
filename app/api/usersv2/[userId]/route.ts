@@ -31,8 +31,17 @@ export async function PATCH(
         }
       );
 
+    if (refferalCode == 0) {
+      const updatedUser = await prismadb.user.update({
+        where: { id: params.userId },
+        data: { referredById: "0" },
+      });
+
+      return NextResponse.json(updatedUser);
+    }
+
     const refferedUser = await prismadb.user.findFirst({
-      where: { myRefferalCode: refferalCode },
+      where: { myRefferalCode: Number(refferalCode) },
     });
 
     if (!refferedUser)
