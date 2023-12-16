@@ -20,19 +20,26 @@ export async function PATCH(
       },
     });
 
-    if (!user) return new NextResponse("User not found", { status: 404 });
+    if (!user)
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
 
     if (user?.referredById != null)
-      return new NextResponse("Reffer Code can only be applied once", {
-        status: 400,
-      });
+      return NextResponse.json(
+        { error: "Reffer Code can only be applied once" },
+        {
+          status: 400,
+        }
+      );
 
     const refferedUser = await prismadb.user.findFirst({
       where: { myRefferalCode: refferalCode },
     });
 
     if (!refferedUser)
-      return new NextResponse("Invalid Refferal Code", { status: 404 });
+      return NextResponse.json(
+        { error: "Invalid Refferal Code" },
+        { status: 404 }
+      );
 
     const updatedUser = await prismadb.user.update({
       where: { id: params.userId },
@@ -44,7 +51,7 @@ export async function PATCH(
     return NextResponse.json(updatedUser);
   } catch (error) {
     console.log("[USER_PATCH_REFFERAL]", error);
-    return new NextResponse("Internal error", { status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
 

@@ -29,7 +29,7 @@ const Navbar = async () => {
           <UserButton afterSignOutUrl="/" />
         </div>
       </div>
-      <MainNav className="mx-6 md:hidden flex" />
+      <MainNav className="mx-6 md:hidden" />
     </div>
   );
 };
