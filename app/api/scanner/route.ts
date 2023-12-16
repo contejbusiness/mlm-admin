@@ -3,7 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
-    const scanner = await prismadb.scanner.findMany();
+    const scanner = await prismadb.scanner.findFirst({
+      where: { active: true },
+    });
 
     return NextResponse.json(scanner);
   } catch (error) {
