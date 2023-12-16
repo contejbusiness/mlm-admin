@@ -46,6 +46,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     try {
       setLoading(true);
       await axios.patch(`/api/${params.storeId}/redeems/${data.id}`);
+      router.refresh();
+      router.push(`/${params.storeId}/requests`);
+      toast.success("Balance Updated");
     } catch (error) {
       toast.error("Failed to update status");
     } finally {
