@@ -30,13 +30,13 @@ export async function POST(
 
       await prisma.user.update({
         where: { id: params.userId },
-        data: { balance: user.balance - amount },
+        data: { balance: user.balance - Number(amount) },
       });
 
       const newRedeem = await prisma.redeem.create({
         data: {
           userId: params.userId,
-          amount: amount,
+          amount: Number(amount),
           bank: bank,
         },
       });
