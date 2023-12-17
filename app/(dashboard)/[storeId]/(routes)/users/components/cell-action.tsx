@@ -83,11 +83,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             <Check className="mr-2 h-4 w-4" /> View Referrals
           </DropdownMenuItem>
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             onClick={() => router.push(`/${params.storeId}/users/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update User
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           {/* <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete
           </DropdownMenuItem> */}
