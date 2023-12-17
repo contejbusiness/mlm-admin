@@ -118,3 +118,47 @@ export async function PATCH(
     return new NextResponse("Internal error", { status: 500 });
   }
 }
+
+export async function PUT(
+  req: Request,
+  { params }: { params: { redeemId: string } }
+) {
+  try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthenticated", { status: 403 });
+    }
+
+    if (!params.redeemId) {
+      return new NextResponse("Redeem id is required", { status: 400 });
+    }
+
+    const redeem = await prismadb.redeem.findUnique({
+      where: {
+        id: params.redeemId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!redeem) {
+      return new NextResponse("Redeem request not found", { status: 404 });
+    }
+
+    const response = await prismadb.redeem.update({
+      where: {
+        id: params.redeemId,
+      },
+      data: {
+        status: "COMPLETED",
+      },
+    });
+
+    return NextResponse.json(response);
+  } catch (error) {
+    console.log("[REDEEM_PATCH]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}

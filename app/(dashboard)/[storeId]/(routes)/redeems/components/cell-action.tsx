@@ -47,13 +47,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     try {
       setLoading(true);
 
-      const res = await axios.patch(
-        `/api/${params.storeId}/redeems/${data.id}`
-      );
+      await axios.put(`/api/${params.storeId}/redeems/${data.id}`);
 
-      console.log("🚀 ~ file: cell-action.tsx:51 ~ onDone ~ res:", res);
+      router.refresh();
+      router.push(`/${params.storeId}/redeems`);
+      toast.success("Status Updated");
     } catch (error) {
-
       toast.error("Failed to update status");
     } finally {
       setOpen(false);
