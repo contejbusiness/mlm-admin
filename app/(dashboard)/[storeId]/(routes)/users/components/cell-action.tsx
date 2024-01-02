@@ -14,9 +14,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AlertModal } from "@/components/modals/alert-modal";
 
 import { UserColumn } from "./columns";
+import { RewardModal } from "@/components/modals/reward-model";
 
 interface CellActionProps {
   data: UserColumn;
@@ -27,7 +27,6 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const params = useParams();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const onConfirm = async () => {
     try {
       setLoading(true);
@@ -42,12 +41,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     }
   };
 
-  const onDone = async () => {
+  const onReward = async () => {
     try {
       setLoading(true);
-      await axios.patch(`/api/${params.storeId}/redeems/${data.id}`);
+      await axios.patch(`/api/${params.storeId}/user/${data.id}`);
+      toast.success("Reward Sent.");
+      router.refresh();
     } catch (error) {
-      toast.error("Failed to update status");
+      toast.error("Failed to send reward.");
     } finally {
       setOpen(false);
       setLoading(false);
@@ -61,12 +62,15 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   return (
     <>
-      <AlertModal
+      <RewardModal
         isOpen={open}
         onClose={() => setOpen(false)}
-        onConfirm={onConfirm}
+        onConfirm={onReward}
         loading={loading}
       />
+
+      {/* <BalanceModal /> */}
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -83,11 +87,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             <Check className="mr-2 h-4 w-4" /> View Referrals
           </DropdownMenuItem>
-          {/* <DropdownMenuItem
-            onClick={() => router.push(`/${params.storeId}/users/${data.id}`)}
-          >
-            <Edit className="mr-2 h-4 w-4" /> Update User
-          </DropdownMenuItem> */}
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <Edit className="mr-2 h-4 w-4" /> Add Balance
+          </DropdownMenuItem>
           {/* <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete
           </DropdownMenuItem> */}
